@@ -2,22 +2,18 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const verifyToken = require('./verifytoken');
-const Model  = require('../models/blogModel')
-require('dotenv').config()
+const Model  = require('../models/blogModel');
+require('dotenv').config();
 
 router.post('/add',(req,res)=>{
     console.log(req.body);
-    
-    // res.send('response from userRouter')
 
     new Model(req.body).save()
     .then((result) => {
-        res.json(result)
-
+        res.json(result);
     }).catch((err) => {
         console.log(err);
-        res.json(err)
-
+        res.json(err);
     });
 })
 
