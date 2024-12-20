@@ -1,5 +1,6 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
-const uri = "mongodb+srv://saurabhsadhwaniofficial:h50nITDMGy2PL2ew@mahmaya-law.rjpt3.mongodb.net/?retryWrites=true&w=majority&appName=mahmaya-law";
+const uri = process.env.MONGODB_URI;
 const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
 async function run() {
   try {
