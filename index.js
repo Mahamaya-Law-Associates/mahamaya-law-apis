@@ -6,7 +6,8 @@ const port = 4200;
 const cors = require('cors');
 
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: 'http://localhost:3000',
+    origin: 'https://mahamaya-law.in'
 }));
 
 app.use(express.json())
