@@ -2,23 +2,33 @@ const express = require('express');
 const router = express.Router();
 const Model = require('../models/userModel')
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const verifyToken = require('./verifytoken');
 require('dotenv').config()
 
-router.post('/add',(req,res)=>{
-    console.log(req.body);
+router.post('/add', async (req,res)=>{
     
     // res.send('response from userRouter')
 
-    new Model(req.body).save()
-    .then((result) => {
-        res.json(result)
-        
-    }).catch((err) => {
+    try {
+        // Encrypt the password before storing
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+        // Replace the plain text password with the hashed password
+        req.body.password = hashedPassword;
+
+        const newUser = new Model(req.body);
+        const result = await newUser.save();
+
+        // Generate JWT token
+        const token = jwt.sign({ id: result._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.json({ result, token });
+    } catch (err) {
         console.log(err);
-        res.json(err)
-        
-    });
+        res.json(err);
+    }
 })
 
 
@@ -57,41 +67,32 @@ router.put('/update/:id',(req,res)=>{
 })
 
 
-router.post('/authenticate',(req,res)=>{
-    Model.findOne(req.body)
-    .then((result) => {
-        console.log(result);
-        if(result){
-
-            const {_id,email,password}= result;
-            const payload = {_id,email,password};
-            jwt.sign(
-                payload,
-                process.env.JWT_SECRET,
-                {expiresIn: 3600},
-                (err,token)=>{
-                    if(err){
-                        console.log(err);
-                        
-                        res.status(500).json({message: 'token generated failed'});
-                    }
-                    else{
-                        res.status(200).json({token: token});
-                    }
-
-                }
-
-            )
-
+router.post('/authenticate', async (req,res)=>{
+    try {
+        const user = await Model.findOne({ email: req.body.email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
-        else{
-            res.status(401).json({message: "no user exist"})
+
+        const isMatch = bcrypt.compare(req.body.password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid credentials' });
         }
-    }).catch((err) => {
+
+        const payload = { _id: user._id, email: user.email };
+        jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' },
+            (err, token) => {
+                if (err) throw res.status(401).json({ message: 'Unauthorized. Invalid token' });
+                res.status(200).json({ token });
+            }
+        );
+    } catch (err) {
         console.log(err);
-        res.status(500).json(err)
-        
-    });
+        res.status(500).json({ message: 'Server error' });
+    }
 })
 
 module.exports = router;
