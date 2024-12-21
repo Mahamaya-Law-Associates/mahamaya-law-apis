@@ -6,7 +6,7 @@ const port = 4200;
 const cors = require('cors');
 
 app.use(cors({
-    origin: [ 'http://localhost:3000', 'https://mahamaya-law.in', 'https://mahamaya-law.vercel.app/', 'https://mahamaya-law.vercel.app' ]
+    origin: [ 'http://localhost:3000', 'https://mahamaya-law.in', 'https://mahamaya-law.vercel.app/', 'https://mahamaya-law.vercel.app', 'https://mahamaya-law-associates.vercel.app' ]
 }));
 
 app.use(express.json())
