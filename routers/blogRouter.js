@@ -1,5 +1,5 @@
 const express = require('express');
-const router = require('../index.js');
+const router = express.Router();
 const verifyToken = require('./verifytoken');
 const Model  = require('../models/blogModel');
 require('dotenv').config();
