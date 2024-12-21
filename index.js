@@ -1,4 +1,5 @@
 const express = require('express');
+const router = express.Router();
 const userRouter = require('./routers/userRouter');
 const blogRouter = require('./routers/blogRouter')
 const app = express();
@@ -9,6 +10,12 @@ const cors = require('cors');
 app.use(express.json()) 
 app.use('/user', userRouter);
 app.use('/blog', blogRouter);
+
+router.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', "*");
