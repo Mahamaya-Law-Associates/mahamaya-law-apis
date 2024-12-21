@@ -24,7 +24,16 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(cors());
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'https://mahamaya-law.in',
+        'https://mahamaya-law.vercel.app',
+        'https://mahamaya-law-associates.vercel.app',
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
 
 
 app.get('/', (req, res) => {
