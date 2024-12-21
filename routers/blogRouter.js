@@ -4,6 +4,12 @@ const verifyToken = require('./verifytoken');
 const Model  = require('../models/blogModel');
 require('dotenv').config();
 
+router.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
 router.post('/add',(req,res)=>{
     console.log(req.body);
 
