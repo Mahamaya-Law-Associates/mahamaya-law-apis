@@ -7,12 +7,11 @@ const cors = require('cors');
 
 app.use(cors({
     origin: [
-        'http://localhost:3000',
-        'http://mahamaya-law.vercel.app',
-        'http://mahamaya-law-associates.vercel.app',
-        'https://mahamaya-law.in',
-        'https://mahamaya-law.vercel.app',
-        'https://mahamaya-law-associates.vercel.app'
+        '*'
+        // 'http://localhost:3000',
+        // 'https://mahamaya-law.in',
+        // 'https://mahamaya-law.vercel.app',
+        // 'https://mahamaya-law-associates.vercel.app',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
