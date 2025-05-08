@@ -101,6 +101,16 @@ router.post('/authenticate', async (req,res)=>{
     }
 })
 
+router.post('/verifytoken', verifyToken, (req, res) => {
+    try {
+        // If the token is valid, this route will be reached
+        res.status(200).json({ message: 'Token is valid' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Token Invalid' });
+    }
+});
+
 module.exports = router;
 
 
