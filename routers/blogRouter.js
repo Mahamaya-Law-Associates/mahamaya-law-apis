@@ -11,7 +11,7 @@ router.use(function(req, res, next) {
     next();
 });
 
-router.post('/add',(req,res)=>{
+router.post('/add', verifyToken, (req, res) => {
     console.log(req.body);
 
     new Model(req.body).save()
@@ -21,7 +21,7 @@ router.post('/add',(req,res)=>{
         console.log(err);
         res.json(err);
     });
-})
+});
 
 router.get('/getall',(req,res)=>{
     Model.find()
@@ -44,14 +44,19 @@ router.get('/getbyid/:id',(req,res)=>{
     })
 })
 
-router.delete('/delete/:id',(req,res)=>{
+router.delete('/delete/:id', verifyToken, (req, res) => {
     Model.findByIdAndDelete(req.params.id)
-    .then((result)=>{
-        res.status(200).json(result);
-    }).catch((err)=>{
-        res.status(500).json(err);  
+    .then((result) => {
+        if (!result) {
+            return res.status(404).json({ message: "Blog not found" });
+        }
+        res.status(200).json({ message: "Blog deleted successfully", result });
+    })
+    .catch((err) => {
+        console.error(err);
+        res.status(500).json({ message: "Error deleting blog", error: err });
     });
-})
+});
 
 
 module.exports = router;
